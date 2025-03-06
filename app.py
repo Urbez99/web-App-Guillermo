@@ -14,11 +14,12 @@ mysql = MySQL(app)  # Asegúrate de pasar la app a MySQL()
 
 @app.route("/")
 def main():
-    return "Welcome!"
+    return "Hola!" #Mensaje cambiado
 
 @app.route('/how are you')
 def hello():
-    return 'I am good, how about you?'
+    #Descripción de la actualización
+    return 'Sergio ha traducido la página al español y ha puesto estilos!'
 
 @app.route('/read from database')
 def read():
@@ -30,7 +31,7 @@ def read():
 
     result = []
     for row in rows:
-        result.append(f"{row[0]} - {row[1]}")  # Formato: id - nombre
+        result.append(f"<p style='color: blue; font-weight: bold;'>{row[0]} - {row[1]}</p>")  # Formato: id - nombre
 
     cursor.close()  # Cerrar el cursor
 
