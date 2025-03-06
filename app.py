@@ -31,7 +31,8 @@ def read():
 
     result = []
     for row in rows:
-        result.append(f"<p style='color: blue; font-weight: bold;'>{row[0]} - {row[1]}</p>")  # Formato: id - nombre
+        # Cambio en los estilos
+        result.append(f"<p style='color: blue; font-weight: bold; font-family: Arial; background-color: lightgray; padding: 5px; border-radius: 5px;'>{row[0]} - {row[1]}</p>")  # Formato: id - nombre
 
     cursor.close()  # Cerrar el cursor
 
