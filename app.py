@@ -66,7 +66,6 @@ def add_employees():
 
 
 if __name__ == "__main__":
-    if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))  # Obtiene el puerto dinámico de Render, si está disponible
     app.run(debug=True, host="0.0.0.0", port=port)  # Asegura que esté escuchando en el puerto correcto
 
