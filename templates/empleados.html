@@ -2,40 +2,40 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Lista de Empleados</title>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; }
-        table { width: 50%; margin: auto; border-collapse: collapse; }
-        th, td { border: 1px solid black; padding: 10px; }
-        th { background-color: #4CAF50; color: white; }
-        tr:hover { background-color: #f5f5f5; } /* Efecto hover en las filas de la tabla */
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Empleados</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <h1>Lista de Empleados</h1>
-    
-    {% if employees %}
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for emp in employees %}
-            <tr>
-                <td>{{ emp[0] }}</td>
-                <td>{{ emp[1] }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <p>No se encontraron empleados.</p>
-    {% endif %}
-    
-    <br>
-    <a href="/">Volver a Inicio</a>
+    <div class="container">
+        <h1>Lista de Empleados</h1>
+
+        <!-- Tabla para mostrar los empleados -->
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Mostrar cada empleado en una fila -->
+                {% for employee in employees %}
+                    <tr>
+                        <td>{{ employee.id }}</td>
+                        <td>{{ employee.name }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="2">No hay empleados registrados.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Enlace para volver a la página principal -->
+        <br>
+        <a href="{{ url_for('home') }}">Volver a la página de inicio</a>
+    </div>
 </body>
 </html>
