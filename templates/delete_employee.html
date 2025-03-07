@@ -1,0 +1,29 @@
+<!-- templates/delete_employee.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eliminar Empleado</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Eliminar un Empleado</h1>
+        
+        <!-- Formulario para eliminar un empleado -->
+        <form action="/delete_employee" method="POST">
+            <label for="employee_id">Selecciona el empleado a eliminar:</label>
+            <select name="employee_id" id="employee_id" required>
+                {% for employee in employees %}
+                    <option value="{{ employee.id }}">{{ employee.name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Eliminar Empleado</button>
+        </form>
+
+        <br><br>
+        <a href="/empleados">Volver a la lista de empleados</a>
+    </div>
+</body>
+</html>
