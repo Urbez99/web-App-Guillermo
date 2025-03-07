@@ -63,6 +63,37 @@ def add_employee():
         db.session.rollback()  # Asegura que no haya problemas si hay un error
         return f"<h3 style='color:red;'>Error al agregar empleado:</h3><p>{str(e)}</p>"
 
+@app.route("/show_delete_employee_form", methods=["GET"])
+def show_delete_employee_form():
+    """Muestra el formulario para eliminar un empleado"""
+    try:
+        # Obtener la lista de empleados
+        employees = Employee.query.all()
+        return render_template("delete_employee.html", employees=employees)
+    except Exception as e:
+        return f"<h3 style='color:red;'>Error al obtener empleados:</h3><p>{str(e)}</p>"
+
+@app.route("/delete_employee", methods=["POST"])
+def delete_employee():
+    """Elimina el empleado seleccionado de la base de datos"""
+    try:
+        # Obtener el ID del empleado a eliminar
+        employee_id = request.form["employee_id"]
+        
+        # Buscar al empleado en la base de datos
+        employee_to_delete = Employee.query.get(employee_id)
+        
+        if employee_to_delete:
+            db.session.delete(employee_to_delete)
+            db.session.commit()
+            return redirect(url_for("read"))  # Redirigir a la lista de empleados
+        else:
+            return "<h3 style='color:red;'>Empleado no encontrado.</h3>"
+    
+    except Exception as e:
+        db.session.rollback()
+        return f"<h3 style='color:red;'>Error al eliminar empleado:</h3><p>{str(e)}</p>"
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))  # Obtiene el puerto dinámico de Render, si está disponible
     app.run(debug=True, host="0.0.0.0", port=port)  # Asegura que esté escuchando en el puerto correcto
