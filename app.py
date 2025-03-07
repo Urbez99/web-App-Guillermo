@@ -12,6 +12,15 @@ app.config['MYSQL_DB'] = os.environ.get('MYSQL_DB', 'mydatabase_8prt')
 
 mysql = MySQL(app)
 
+# Función para obtener los empleados
+def get_employees():
+    conn = mysql.connection
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, name FROM users")
+    rows = cursor.fetchall()
+    cursor.close()
+    return rows
+
 # Rutas de la aplicación
 @app.route("/")
 def home():
@@ -20,21 +29,12 @@ def home():
 
 @app.route("/empleados")
 def read():
-    """Consulta la base de datos y muestra los empleados en una tabla HTML"""
+    """Consulta la base de datos y muestra los empleados"""
     try:
-        conn = mysql.connection
-        cursor = conn.cursor()
-
-        # Aquí consulta la base de datos, asegúrate de que la tabla 'users' existe
-        cursor.execute("SELECT id, name FROM users")
-        rows = cursor.fetchall()
-
-        cursor.close()
-        return render_template("empleados.html", employees=rows)  # Renderiza los empleados
-
+        employees = get_employees()
+        return render_template("empleados.html", employees=employees)
     except Exception as e:
-        return f"<h3 style='color:red;'>Error en la base de datos:</h3><p>{str(e)}</p><a href='/'>Volver a Inicio</a>"
-
+        return render_template('error.html', error=str(e))  # Renderiza una página de error si ocurre un problema
 
 if __name__ == "__main__":
     app.run(debug=True)
