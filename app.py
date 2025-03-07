@@ -31,7 +31,9 @@ def read():
         return render_template("empleados.html", employees=employees)  # Renderiza los empleados
 
     except Exception as e:
-        return f"<h3 style='color:red;'>Error en la base de datos:</h3><p>{str(e)}</p><a href='/'>Volver a Inicio</a>"
+        # En caso de error, renderiza error.html y pasa el mensaje de error
+        return render_template("error.html", error=str(e))
+
 
 if __name__ == "__main__":
     app.run(debug=True)
