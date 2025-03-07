@@ -1,0 +1,19 @@
+<!-- templates/add_employee.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Empleado</title>
+</head>
+<body>
+    <h1>Agregar un nuevo empleado</h1>
+    <form action="/add_employee" method="POST">
+        <label for="name">Nombre:</label>
+        <input type="text" id="name" name="name" required>
+        <button type="submit">Agregar Empleado</button>
+    </form>
+    <br>
+    <a href="/empleados">Ver todos los empleados</a>
+</body>
+</html>
