@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -20,16 +20,6 @@ class Employee(db.Model):
 with app.app_context():
     db.create_all()
 
-    # Añadir empleados a la base de datos si no existen
-    if not Employee.query.first():  # Solo los añade si no hay empleados aún
-        employees_to_add = [
-            Employee(name="Úrbez Modrego"),
-            Employee(name="Ana Cris Ruiz"),
-            Employee(name="Sergio Alfranca")
-        ]
-        db.session.add_all(employees_to_add)
-        db.session.commit()
-
 # Rutas de la aplicación
 @app.route("/")
 def home():
@@ -47,25 +37,32 @@ def read():
     except Exception as e:
         return f"<h3 style='color:red;'>Error en la base de datos:</h3><p>{str(e)}</p><a href='/'>Volver a Inicio</a>"
 
-@app.route('/add_employees')
-def add_employees():
+@app.route("/add_employee", methods=["GET"])
+def show_add_employee_form():
+    """Muestra el formulario para añadir un nuevo empleado"""
+    return render_template("add_employee.html")
+
+@app.route("/add_employee", methods=["POST"])
+def add_employee():
+    """Recibe los datos del formulario y añade un nuevo empleado a la base de datos"""
     try:
-        # Crear empleados
-        employee1 = Employee(name="Úrbez Modrego")
-        employee2 = Employee(name="Ana Cris Ruiz")
-        employee3 = Employee(name="Sergio Alfranca")
+        # Obtener el nombre del empleado del formulario
+        name = request.form["name"]
         
-        # Agregar a la base de datos
-        db.session.add_all([employee1, employee2, employee3])
+        # Crear el nuevo empleado
+        new_employee = Employee(name=name)
+        
+        # Agregarlo a la base de datos
+        db.session.add(new_employee)
         db.session.commit()
 
-        return "Empleados añadidos correctamente"
+        # Redirigir a la lista de empleados
+        return redirect(url_for("read"))
+
     except Exception as e:
         db.session.rollback()  # Asegura que no haya problemas si hay un error
-        return f"<h3 style='color:red;'>Error al agregar empleados:</h3><p>{str(e)}</p>"
-
+        return f"<h3 style='color:red;'>Error al agregar empleado:</h3><p>{str(e)}</p>"
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))  # Obtiene el puerto dinámico de Render, si está disponible
     app.run(debug=True, host="0.0.0.0", port=port)  # Asegura que esté escuchando en el puerto correcto
-
