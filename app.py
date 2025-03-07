@@ -35,5 +35,6 @@ def read():
     except Exception as e:
         return f"<h3 style='color:red;'>Error en la base de datos:</h3><p>{str(e)}</p><a href='/'>Volver a Inicio</a>"
 
+
 if __name__ == "__main__":
     app.run(debug=True)
