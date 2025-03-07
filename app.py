@@ -1,40 +1,37 @@
 import os
 from flask import Flask, render_template
-from flask_mysqldb import MySQL
+from flask_sqlalchemy import SQLAlchemy
+
 app = Flask(__name__)
-# Configuración de MySQL con las credenciales de Render
-app.config['MYSQL_HOST'] = os.environ.get('MYSQL_HOST', 'dpg-cv5hhsi3esus73atsp1g-a')  # Usaremos las variables de entorno
-app.config['MYSQL_USER'] = os.environ.get('MYSQL_USER', 'mydatabase_8prt_user')  # Asegúrate de usar tus credenciales
-app.config['MYSQL_PASSWORD'] = os.environ.get('MYSQL_PASSWORD', 'qqvZ0Cv4wJf539z9wGv04vBGJWUQKGmH')
-app.config['MYSQL_DB'] = os.environ.get('MYSQL_DB', 'mydatabase_8prt')
-mysql = MySQL(app)
-# Función para obtener los empleados
-def get_employees():
-    conn = mysql.connection
-    cursor = conn.cursor()
-    cursor.execute("SELECT id, name FROM users")
-    rows = cursor.fetchall()
-    cursor.close()
-    return rows
+
+# Configuración de PostgreSQL con las credenciales de Render
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgresql://root:NFNoEW92FIxEHd1BYDgS4YtRXeNUSkAi@dpg-cv5i3cij1k6c73d1si7g-a.frankfurt-postgres.render.com/mydatabase_ans5')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Inicialización de SQLAlchemy
+db = SQLAlchemy(app)
+
+# Modelo de la base de datos (Tabla de empleados)
+class Employee(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+
 # Rutas de la aplicación
 @app.route("/")
 def home():
     """Página de inicio"""
     return render_template("index.html")  # Página de inicio
-@app.route("/empleados")
+
 @app.route("/empleados")
 def read():
     """Consulta la base de datos y muestra los empleados en una tabla HTML"""
     try:
-        conn = mysql.connection
-        cursor = conn.cursor()
-        # Aquí consulta la base de datos, asegúrate de que la tabla 'users' existe
-        cursor.execute("SELECT id, name FROM users")
-        rows = cursor.fetchall()
-        cursor.close()
-        return render_template("empleados.html", employees=rows)  # Renderiza los empleados
+        # Consulta la tabla de empleados
+        employees = Employee.query.all()
+        return render_template("empleados.html", employees=employees)  # Renderiza los empleados
+
     except Exception as e:
-        print(f"Error al acceder a la base de datos: {str(e)}")  # Esto imprimirá el error en la consola de la aplicación
-        return render_template("error.html", error=str(e))  # Página de error con el mensaje
+        return f"<h3 style='color:red;'>Error en la base de datos:</h3><p>{str(e)}</p><a href='/'>Volver a Inicio</a>"
+
 if __name__ == "__main__":
     app.run(debug=True)
