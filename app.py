@@ -19,29 +19,22 @@ def home():
     return render_template("index.html")  # Asegúrate de que 'index.html' existe en 'templates/'
 
 
-# 🔹 Ruta para mostrar empleados
 @app.route("/empleados")
 def read():
     """Consulta la base de datos y muestra los empleados en una tabla HTML"""
     try:
         conn = mysql.connection
         cursor = conn.cursor()
-        
-        # Verificar que la tabla 'users' exista
-        cursor.execute("SHOW TABLES LIKE 'users'")
-        table_exists = cursor.fetchone()
-        
-        if not table_exists:
-            return "<h3>Error: La tabla 'users' no existe en la base de datos.</h3>"
 
-        cursor.execute("SELECT id, name FROM users")  # Asegúrate de que la tabla 'users' existe
+        cursor.execute("SELECT id, name FROM users")  
         rows = cursor.fetchall()
         cursor.close()
 
-        return render_template("empleados.html", employees=rows)  # Enviar datos a la plantilla HTML
+        return render_template("empleados.html", employees=rows)
 
     except Exception as e:
-        return f"<h3>Error al conectar con la base de datos:</h3><p>{str(e)}</p>"  # Muestra error en la web
+        return f"<h3 style='color:red;'>Error en la base de datos:</h3><p>{str(e)}</p><a href='/'>Volver a Inicio</a>"
+
 
 
 # 🔹 Iniciar Servidor
