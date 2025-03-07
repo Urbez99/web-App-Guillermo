@@ -1,11 +1,10 @@
 import os
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify
 from flask_mysqldb import MySQL
 
 app = Flask(__name__)
 
 # Configuración de MySQL
-
 app.config['MYSQL_HOST'] = os.environ.get('MYSQL_DATABASE_HOST', 'localhost')
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'root'
@@ -14,35 +13,37 @@ app.config['MYSQL_DB'] = 'mydatabase'
 mysql = MySQL(app)
 
 
-#Rutas de la Aplicación
-
-
+# 🔹 Página de inicio
 @app.route("/")
 def home():
-    """Página de inicio"""
-    return render_template("index.html")  # Renderiza la plantilla HTML
+    return render_template("index.html")  # Asegúrate de que 'index.html' existe en 'templates/'
 
+
+# 🔹 Ruta para mostrar empleados
 @app.route("/empleados")
 def read():
     """Consulta la base de datos y muestra los empleados en una tabla HTML"""
     try:
         conn = mysql.connection
         cursor = conn.cursor()
+        
+        # Verificar que la tabla 'users' exista
+        cursor.execute("SHOW TABLES LIKE 'users'")
+        table_exists = cursor.fetchone()
+        
+        if not table_exists:
+            return "<h3>Error: La tabla 'users' no existe en la base de datos.</h3>"
 
         cursor.execute("SELECT id, name FROM users")  # Asegúrate de que la tabla 'users' existe
         rows = cursor.fetchall()
-
         cursor.close()
+
         return render_template("empleados.html", employees=rows)  # Enviar datos a la plantilla HTML
 
     except Exception as e:
-        return render_template("error.html", error=str(e))  # Página de error si hay problemas
+        return f"<h3>Error al conectar con la base de datos:</h3><p>{str(e)}</p>"  # Muestra error en la web
 
 
-
-#Iniciar Servidor
-
-
+# 🔹 Iniciar Servidor
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))  # Obtener el puerto de Render, si no existe usa 5000
-    app.run(host="0.0.0.0", port=port, debug=True)
+    app.run(debug=True)
