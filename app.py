@@ -22,12 +22,19 @@ def home():
     """Página de inicio"""
     return render_template("index.html")  # Página de inicio
 @app.route("/empleados")
+@app.route("/empleados")
 def read():
-    """Consulta la base de datos y muestra los empleados"""
+    """Consulta la base de datos y muestra los empleados en una tabla HTML"""
     try:
-        employees = get_employees()
-        return render_template("empleados.html", employees=employees)
+        conn = mysql.connection
+        cursor = conn.cursor()
+        # Aquí consulta la base de datos, asegúrate de que la tabla 'users' existe
+        cursor.execute("SELECT id, name FROM users")
+        rows = cursor.fetchall()
+        cursor.close()
+        return render_template("empleados.html", employees=rows)  # Renderiza los empleados
     except Exception as e:
-        return render_template('error.html', error=str(e))  # Renderiza una página de error si ocurre un problema
+        print(f"Error al acceder a la base de datos: {str(e)}")  # Esto imprimirá el error en la consola de la aplicación
+        return render_template("error.html", error=str(e))  # Página de error con el mensaje
 if __name__ == "__main__":
     app.run(debug=True)
