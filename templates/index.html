@@ -11,6 +11,11 @@
         <h1>Bienvenido a Nuestra Aplicación Web</h1>
         <p>Consulta la lista de Integrantes del grupo aquí:</p>
         <a href="{{ url_for('read') }}">Ver Integrantes del grupo</a>
+
+        <br><br>
+        
+        <p>¿Quieres añadir un nuevo integrante?</p>
+        <a href="{{ url_for('show_add_employee_form') }}">Agregar un nuevo integrante</a>
     </div>
 </body>
 </html>
